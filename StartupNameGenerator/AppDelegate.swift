@@ -16,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        self.verifyIfKeywordsIsPopulated()
         return true
     }
 
@@ -89,5 +89,49 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
+    func verifyIfKeywordsIsPopulated() {
+        let context: NSManagedObjectContext? = persistentContainer.viewContext
+        let error: Error? = nil
+        let fetchRequest: NSFetchRequest<Keyword> = Keyword.fetchRequest()
+        fetchRequest.includesSubentities = false
+        fetchRequest.returnsObjectsAsFaults = false
+        let keywordsCount: Int? = try! context?.count(for: fetchRequest)
+        if error != nil {
+            print("Erro ao verificar quantidade de palavras-chave. ERROR")
+        }
+        if keywordsCount! > 0 {
+            return
+        }
+        populateKeywordList()
+        
+    }
+    
+    
+    func populateKeywordList() {
+        
+        let context: NSManagedObjectContext? = persistentContainer.viewContext
+        var error: Error? = nil
+        let keywordListFilePath: String? = Bundle.main.path(forResource: "keyword-list", ofType: "csv")
+        if keywordListFilePath == nil {
+            return
+        }
+        let fileContents = try? String(contentsOfFile: keywordListFilePath!, encoding: String.Encoding.utf8)
+        if error != nil {
+            print("Não foi possível acessar o arquivo da lista de palavras-chave. ERROR")
+        }
+        let rows: [String]? = fileContents?.components(separatedBy: "\n")
+        for row: String in rows! {
+            var columns: [String] = row.components(separatedBy: ",")
+            let name: String = columns[0]
+            let type: String = columns[1]
+            print("added keyword \(name) with type \(type) to database")
+            let keyword = Keyword.createInManagedObjectContext(moc: context!, name: name, type: Int16(type)!)
+            self.saveContext()
+        }
+        error = nil
+     
+        context?.reset()
+        
+}
 }
 

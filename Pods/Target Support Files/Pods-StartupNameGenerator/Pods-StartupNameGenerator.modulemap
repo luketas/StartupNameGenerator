@@ -1,0 +1,6 @@
+framework module Pods_StartupNameGenerator {
+  umbrella header "Pods-StartupNameGenerator-umbrella.h"
+
+  export *
+  module * { export * }
+}

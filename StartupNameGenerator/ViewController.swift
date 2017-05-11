@@ -128,7 +128,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         createHistory(withStartupName: generateNameWithMixedWords())
         createHistory(withStartupName: generateCrazyName())
         
-        
+        loadData()
 
     }
     
@@ -164,7 +164,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func findWordPrefixes() -> [Any] {
         var keywords: [Any]?
-        let fetchRequest: NSFetchRequest<Keyword> = Keyword.fetchRequest()
+        let fetchRequest = NSFetchRequest<Keyword>(entityName: "Keyword")
+         fetchRequest.predicate = NSPredicate(format: "type == %d", KeywordType.wordPrefix.rawValue)
+       
         do {
             keywords = try managedObjectContext.fetch(fetchRequest)
             
@@ -181,6 +183,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func randomWordPrefix() -> NSString {
         let prefixes: [Keyword] = findWordPrefixes() as! [Keyword]
         let index: Int = random(withMax: prefixes.count)
+    
         return prefixes[index].name! as NSString
     }
     
@@ -270,7 +273,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func randomWordToMix() -> NSString {
         let words: [Keyword] = findWordPrefixesAndSuffixes() as! [Keyword]
         let index: Int = random(withMax: words.count)
-        return words[index].name as! NSString
+        return words[index].name! as NSString
     }
     func generateCrazyName() -> NSString {
         if !hasAnyWord() {
@@ -282,7 +285,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let unvowelWord: NSString = (word.components(separatedBy: vowelCharacterSet) as NSArray).componentsJoined(by: "") as NSString
         return "\(unvowelWord)\(suffix)" as NSString
     }
+}
+    
+
+
     
     
 
-}
+

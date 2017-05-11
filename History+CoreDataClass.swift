@@ -16,6 +16,7 @@ public class History: NSManagedObject {
     self.startupName = name
     self.createdAt = createdAt
     }
+    
     func createHistoryEntry(name: String, createdAt: NSDate) {
         self.startupName = name
         self.createdAt = createdAt
