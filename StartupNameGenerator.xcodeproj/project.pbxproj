@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		A011C1A71EC4B51D00738EF0 /* NameTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A011C1A61EC4B51D00738EF0 /* NameTableViewCell.swift */; };
 		A011C1A91EC4BE9600738EF0 /* RoundedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A011C1A81EC4BE9600738EF0 /* RoundedButton.swift */; };
+		A011C1AB1EC4E60300738EF0 /* keyword-list.csv in Resources */ = {isa = PBXBuildFile; fileRef = A011C1AA1EC4E60300738EF0 /* keyword-list.csv */; };
 		A0A709341EC3C6AF0064E867 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0A709331EC3C6AF0064E867 /* AppDelegate.swift */; };
 		A0A709361EC3C6AF0064E867 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0A709351EC3C6AF0064E867 /* ViewController.swift */; };
 		A0A7093C1EC3C6AF0064E867 /* StartupNameGenerator.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A0A7093A1EC3C6AF0064E867 /* StartupNameGenerator.xcdatamodeld */; };
@@ -53,6 +54,7 @@
 /* Begin PBXFileReference section */
 		A011C1A61EC4B51D00738EF0 /* NameTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NameTableViewCell.swift; sourceTree = "<group>"; };
 		A011C1A81EC4BE9600738EF0 /* RoundedButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoundedButton.swift; sourceTree = "<group>"; };
+		A011C1AA1EC4E60300738EF0 /* keyword-list.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "keyword-list.csv"; sourceTree = "<group>"; };
 		A0A709301EC3C6AF0064E867 /* StartupNameGenerator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StartupNameGenerator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A0A709331EC3C6AF0064E867 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A0A709351EC3C6AF0064E867 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -122,6 +124,7 @@
 		A0A709321EC3C6AF0064E867 /* StartupNameGenerator */ = {
 			isa = PBXGroup;
 			children = (
+				A011C1AA1EC4E60300738EF0 /* keyword-list.csv */,
 				A0A709331EC3C6AF0064E867 /* AppDelegate.swift */,
 				A0A709351EC3C6AF0064E867 /* ViewController.swift */,
 				A0A7093D1EC3C6AF0064E867 /* Assets.xcassets */,
@@ -275,6 +278,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A011C1AB1EC4E60300738EF0 /* keyword-list.csv in Resources */,
 				A0A709661EC3C7270064E867 /* Main.storyboard in Resources */,
 				A0A709411EC3C6AF0064E867 /* LaunchScreen.storyboard in Resources */,
 				A0A7093E1EC3C6AF0064E867 /* Assets.xcassets in Resources */,

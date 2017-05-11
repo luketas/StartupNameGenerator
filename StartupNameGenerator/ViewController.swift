@@ -50,6 +50,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
   
 
     @IBAction func generateButtonTapped(_ sender: Any) {
+        var userInputText: String = self.inputText.text!.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        if (userInputText.characters.count > 0) {
+            words = userInputText.components(separatedBy: " ")
+            generateStartupNames()
+        }
+        else {
+            print("Digite ao menos uma palavra")
+        }
     }
     
     @IBAction func cleanupButtonTapped(_ sender: Any) {
@@ -119,6 +127,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         createHistory(withStartupName: generateNameWithMixedWords())
         createHistory(withStartupName: generateNameWithMixedWords())
         createHistory(withStartupName: generateCrazyName())
+        
+        
 
     }
     
@@ -151,21 +161,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         return word!
     }
     
-    func findWordPrefixes() -> [Any] {
-        var keywords: [Any]?
-        let fetchRequest: NSFetchRequest<Keyword> = Keyword.fetchRequest()
-        do {
-            keywords = try managedObjectContext.fetch(fetchRequest)
-           
-        } catch {
-            print("Erro ao obter palavras-chave do tipo \(KeywordType.wordPrefix)")
-        }
-
-        if keywords == nil {
-            return [Any]()
-        }
-        return keywords!
-    }
     
     func findWordPrefixes() -> [Any] {
         var keywords: [Any]?
@@ -184,7 +179,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     func randomWordPrefix() -> NSString {
-        let prefixes: [Keyword] = findWordPrefixes()
+        let prefixes: [Keyword] = findWordPrefixes() as! [Keyword]
         let index: Int = random(withMax: prefixes.count)
         return prefixes[index].name! as NSString
     }
@@ -213,12 +208,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func randomWordSuffix() -> NSString {
         let suffixes: [Keyword] = findWordSuffixes() as! [Keyword]
         let index: Int = random(withMax: suffixes.count)
-        return suffixes[index].name as! NSString
+        return suffixes[index].name! as NSString
     }
     func randomPartialSuffix() -> NSString {
         let suffixes: [Keyword] = findPartialSuffixes() as! [Keyword]
         let index: Int = random(withMax: suffixes.count)
-        return suffixes[index].name as! NSString
+        return suffixes[index].name! as NSString
     }
     func findPartialSuffixes() -> [Any] {
         var keywords: [Any]?
@@ -228,6 +223,22 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             
         } catch {
             print("Erro ao obter palavras-chave do tipo \(KeywordType.partialSuffix)")
+        }
+        
+        if keywords == nil {
+            return [Any]()
+        }
+        return keywords!
+    }
+    
+    func findWordPrefixesAndSuffixes() -> [Any] {
+        var keywords: [Any]?
+        let fetchRequest: NSFetchRequest<Keyword> = Keyword.fetchRequest()
+        do {
+            keywords = try managedObjectContext.fetch(fetchRequest)
+            
+        } catch {
+            print("Erro ao obter palavras-chave do tipo \(KeywordType.wordPrefix) e \(KeywordType.wordSuffix)")
         }
         
         if keywords == nil {
@@ -251,24 +262,24 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func generateNameWithMixedWords() -> NSString {
         let word: NSString = randomWord()
         let suffix: NSString = randomWordToMix()
-        let firstWord: NSString = (word as? NSString)?.substring(to: (word.characters.count ?? 0) - 2)
-        let secondWord: NSString? = (suffix as? NSString)?.substring(from: 1)
+        let firstWord: NSString = (word as? NSString)!.substring(to: word.length - 2) as NSString
+        let secondWord: NSString? = (suffix as? NSString)!.substring(from: 1) as NSString
         return "\(firstWord)\(secondWord!)" as NSString
     }
     
     func randomWordToMix() -> NSString {
-        let words: [Keyword] = findWordPrefixesAndSuffixes()
+        let words: [Keyword] = findWordPrefixesAndSuffixes() as! [Keyword]
         let index: Int = random(withMax: words.count)
         return words[index].name as! NSString
     }
     func generateCrazyName() -> NSString {
         if !hasAnyWord() {
-            return nil
+            return ""
         }
         let word: NSString = randomWord()
         let suffix: NSString = randomPartialSuffix()
-        let vowelCharacterSet = CharacterSet(charactersInString: "aáãeêéiíoõuy")
-        let unvowelWord: NSString = (word.components(separatedBy: vowelCharacterSet) as NSArray).componentsJoined(byString: "")
+        let vowelCharacterSet = CharacterSet(charactersIn: "aáãeêéiíoõuy")
+        let unvowelWord: NSString = (word.components(separatedBy: vowelCharacterSet) as NSArray).componentsJoined(by: "") as NSString
         return "\(unvowelWord)\(suffix)" as NSString
     }
     
