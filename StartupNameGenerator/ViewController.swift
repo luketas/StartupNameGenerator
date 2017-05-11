@@ -65,6 +65,42 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         return cell
     }
     
-   
+    //Database interaction functions
+    func loadData() {
+        let fetchRequest: NSFetchRequest<History> = History.fetchRequest()
+        do {
+            history = try managedObjectContext.fetch(fetchRequest)
+            self.nameTable.reloadData()
+        } catch {
+            print ("Could not load data from database \(error.localizedDescription)")
+        }
+    }
+    func addToFavorites(name: String, creationDate: NSDate) {
+        let favoriteName = History(context: managedObjectContext)
+        favoriteName.setFavoriteName(name: name, createdAt: creationDate)
+        
+        do {
+            try self.managedObjectContext.save()
+            self.loadData()
+        } catch {
+            print("Could not save data \(error.localizedDescription)")
+        }
+    }
+    
+    func createHistoryWithStartupName (startupName: NSString) {
+        let historyItem = History(context: managedObjectContext)
+        
+        historyItem.createHistoryEntry(name: startupName as String, createdAt: currentDate)
+        
+        do {
+            try self.managedObjectContext.save()
+            self.loadData()
+        } catch {
+            print("Could not save data \(error.localizedDescription)")
+        }
+        
+    }
+    
+       
 
 }
