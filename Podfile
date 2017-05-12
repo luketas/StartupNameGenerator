@@ -5,7 +5,8 @@ target 'StartupNameGenerator' do
   
   use_frameworks!
 
- pod 'IQKeyboardManager'
+ pod 'IQKeyboardManagerSwift', '4.0.9'
+ pod 'Toast-Swift', '~> 2.0.0'
 
   target 'StartupNameGeneratorTests' do
     inherit! :search_paths

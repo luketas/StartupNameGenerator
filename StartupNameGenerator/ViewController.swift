@@ -9,14 +9,14 @@
 import UIKit
 import CoreData
 import Foundation
-
+import Toast_Swift
 
 
 private let CellIdentifier: String = "NameTableViewCell"
 
 
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, NameCellDelegate {
     
     enum KeywordType : Int {
         case wordPrefix = 1
@@ -35,8 +35,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     @IBOutlet weak var nameTable: UITableView!
     @IBOutlet weak var inputText: UITextField!
     
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         super.viewDidLoad()
@@ -47,8 +45,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 
     }
     
-  
-
     @IBAction func generateButtonTapped(_ sender: Any) {
         var userInputText: String = self.inputText.text!.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         if (userInputText.characters.count > 0) {
@@ -56,11 +52,17 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             generateStartupNames()
         }
         else {
-            print("Digite ao menos uma palavra")
+             showToast(text: "Digite ao menos uma palavra")
         }
     }
     
     @IBAction func cleanupButtonTapped(_ sender: Any) {
+        self.deleteAllHistory()
+    }
+    
+    func favoriteBtnTapped(cell: NameTableViewCell) {
+        let indexPath = self.nameTable.indexPathForRow(at: cell.center)
+       
     }
     
     //TableView protocol functions
@@ -83,7 +85,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             history = try managedObjectContext.fetch(fetchRequest)
             self.nameTable.reloadData()
         } catch {
-            print ("Could not load data from database \(error.localizedDescription)")
+             showToast(text: "Could not load data from database \(error.localizedDescription)")
         }
     }
     func addToFavorites(name: String, creationDate: NSDate) {
@@ -94,7 +96,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             try self.managedObjectContext.save()
             self.loadData()
         } catch {
-            print("Could not save data \(error.localizedDescription)")
+             showToast(text: "Could not save data \(error.localizedDescription)")
         }
     }
     
@@ -107,9 +109,26 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             try self.managedObjectContext.save()
             self.loadData()
         } catch {
-            print("Could not save data for item \(historyItem.startupName) \(error.localizedDescription)")
+             showToast(text: "Could not save data for item \(String(describing: historyItem.startupName)) \(error.localizedDescription)")
         }
         
+    }
+    
+    func deleteAllHistory() {
+        let appDelegate: AppDelegate? = (UIApplication.shared.delegate as? AppDelegate)
+        let context: NSManagedObjectContext? = appDelegate?.persistentContainer.viewContext
+        let fetchRequest: NSFetchRequest? = History.fetchRequest()
+        var error: Error? = nil
+        let historyList: [History]? = try! context?.fetch(fetchRequest!)
+        if error != nil {
+             showToast(text: "Erro ao obter históricos")
+        }
+        for history: History in historyList! {
+            
+            context?.delete(history)
+            loadData()
+        }
+        self.nameTable.reloadData()
     }
     
     func generateStartupNames() {
@@ -152,11 +171,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func randomWord() -> NSString {
         var word: NSString? = nil
         if hasOnlyOneWord() {
-            word = words.first as! NSString
+            word = (words.first as! NSString)
         }
         else {
             let index: Int = random(withMax: words.count)
-            word = words[index] as! NSString
+            word = (words[index] as! NSString)
         }
         return word!
     }
@@ -171,7 +190,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             keywords = try managedObjectContext.fetch(fetchRequest)
             
         } catch {
-            print("Erro ao obter palavras-chave do tipo \(KeywordType.wordPrefix)")
+             showToast(text: "Erro ao obter palavras-chave do tipo \(KeywordType.wordPrefix)")
         }
         
         if keywords == nil {
@@ -199,7 +218,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             keywords = try managedObjectContext.fetch(fetchRequest)
             
         } catch {
-            print("Erro ao obter palavras-chave do tipo \(KeywordType.wordSuffix)")
+             showToast(text: "Erro ao obter palavras-chave do tipo \(KeywordType.wordSuffix)")
         }
         
         if keywords == nil {
@@ -225,7 +244,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             keywords = try managedObjectContext.fetch(fetchRequest)
             
         } catch {
-            print("Erro ao obter palavras-chave do tipo \(KeywordType.partialSuffix)")
+            showToast(text: "Erro ao obter palavras-chave do tipo \(KeywordType.partialSuffix)")
         }
         
         if keywords == nil {
@@ -241,7 +260,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             keywords = try managedObjectContext.fetch(fetchRequest)
             
         } catch {
-            print("Erro ao obter palavras-chave do tipo \(KeywordType.wordPrefix) e \(KeywordType.wordSuffix)")
+             showToast(text: "Erro ao obter palavras-chave do tipo \(KeywordType.wordPrefix) e \(KeywordType.wordSuffix)")
         }
         
         if keywords == nil {
@@ -284,6 +303,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let vowelCharacterSet = CharacterSet(charactersIn: "aáãeêéiíoõuy")
         let unvowelWord: NSString = (word.components(separatedBy: vowelCharacterSet) as NSArray).componentsJoined(by: "") as NSString
         return "\(unvowelWord)\(suffix)" as NSString
+    }
+    
+    func showToast(text: String) {
+        var style = ToastStyle()
+        style.messageColor = UIColor.white
+        self.view.makeToast(text, duration: 3.0, position: .center, style: style)
+        
     }
 }
     

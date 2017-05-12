@@ -8,8 +8,13 @@
 
 import UIKit
 
+protocol NameCellDelegate {
+    func favoriteBtnTapped(cell: NameTableViewCell)
+}
+
 class NameTableViewCell: UITableViewCell {
-    
+   
+    var delegate: NameCellDelegate?
     
     @IBOutlet weak var startupNameLbl: UILabel!
 
@@ -17,11 +22,15 @@ class NameTableViewCell: UITableViewCell {
         super.awakeFromNib()
         
     }
-
+    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
+    }
+    
+    @IBAction func favoriteBtnTapped(_ sender: Any) {
+        delegate?.favoriteBtnTapped(cell: self)
     }
     
 
