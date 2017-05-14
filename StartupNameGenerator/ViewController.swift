@@ -16,7 +16,7 @@ private let CellIdentifier: String = "NameTableViewCell"
 
 
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, NameCellDelegate {
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     enum KeywordType : Int {
         case wordPrefix = 1
@@ -37,7 +37,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        super.viewDidLoad()
+        
         nameTable.delegate = self
         nameTable.dataSource = self
         managedObjectContext = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
@@ -57,14 +57,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     @IBAction func cleanupButtonTapped(_ sender: Any) {
-        self.deleteAllHistory()
-    }
+        deleteNonFav()
     
-    func favoriteBtnTapped(cell: NameTableViewCell) {
-        let indexPath = self.nameTable.indexPathForRow(at: cell.center)
-       
     }
-    
     //TableView protocol functions
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return history.count
@@ -75,28 +70,63 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let entry = history[indexPath.row]
         cell.startupNameLbl.text = entry.startupName
         
+        
+        let button : UIButton = UIButton(type:UIButtonType.custom) as UIButton
+        
+        button.frame = CGRect(origin: CGPoint(x: 40,y :60), size: CGSize(width: 50, height: 50))
+        let cellHeight: CGFloat = 44.0
+        button.center = CGPoint(x: view.bounds.width - 50, y: cellHeight / 2.0)
+        button.setImage(UIImage(named:"emptystar"), for: UIControlState.normal)
+        if entry.isFavorite {
+            button.setImage(UIImage(named:"star-full"), for: UIControlState.normal)
+        } else {
+            button.setImage(UIImage(named:"emptystar"), for: UIControlState.selected)
+        }
+        
+        button.addTarget(self, action: #selector(buttonClicked), for: UIControlEvents.touchUpInside)
+        button.tag = indexPath.row
+        
+        cell.addSubview(button)
+        
+        
         return cell
     }
+    
+    func buttonClicked(sender : UIButton!) {
+        if (history[sender.tag].isFavorite == false) {
+            history[sender.tag].addToFavorites()
+            addToFavoritesDatabase(historyObject: history[sender.tag])
+            sender.setImage(UIImage(named:"star-full"), for: UIControlState.normal)
+        } else {
+            history[sender.tag].removeFromFavorites()
+            print("removed \(history[sender.tag].startupName)")
+            sender.setImage(UIImage(named:"star-empty"), for: UIControlState.normal)
+        }
+        nameTable.reloadData()
+    }
+   
     
     //Database interaction functions
     func loadData() {
         let fetchRequest: NSFetchRequest<History> = History.fetchRequest()
         do {
             history = try managedObjectContext.fetch(fetchRequest)
+            
             self.nameTable.reloadData()
         } catch {
              showToast(text: "Could not load data from database \(error.localizedDescription)")
         }
     }
-    func addToFavorites(name: String, creationDate: NSDate) {
-        let favoriteName = History(context: managedObjectContext)
-        favoriteName.setFavoriteName(name: name, createdAt: creationDate)
+    
+   
+    
+    func addToFavoritesDatabase(historyObject: History) {
         
         do {
             try self.managedObjectContext.save()
             self.loadData()
         } catch {
-             showToast(text: "Could not save data \(error.localizedDescription)")
+            showToast(text: "Could not save data for item \(String(describing: historyObject.startupName)) \(error.localizedDescription)")
         }
     }
     
@@ -114,7 +144,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
     }
     
-    func deleteAllHistory() {
+    func deleteNonFav() {
         let appDelegate: AppDelegate? = (UIApplication.shared.delegate as? AppDelegate)
         let context: NSManagedObjectContext? = appDelegate?.persistentContainer.viewContext
         let fetchRequest: NSFetchRequest? = History.fetchRequest()
@@ -124,8 +154,16 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
              showToast(text: "Erro ao obter históricos")
         }
         for history: History in historyList! {
-            
+            if history.isFavorite == false {
             context?.delete(history)
+                do {
+                    try context?.save()
+                    self.loadData()
+                } catch {
+                    showToast(text: "Could not save data for item")
+                }
+                
+            }
             loadData()
         }
         self.nameTable.reloadData()
@@ -162,6 +200,20 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func hasAnyWord() -> Bool {
         return words.count > 0
+    }
+    func hasMoreThan3Char(name: NSString) -> Bool{
+        if (name.length < 3) {
+            return false
+        }
+        return true
+    }
+    
+    func isUnique(name: NSString , list: [History]) -> Bool {
+        if list.contains(where: {$0.startupName == name as String}) {
+            return false
+        } else {
+            return true
+        }
     }
     
     func random(withMax max: Int) -> Int {
@@ -202,14 +254,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func randomWordPrefix() -> NSString {
         let prefixes: [Keyword] = findWordPrefixes() as! [Keyword]
         let index: Int = random(withMax: prefixes.count)
+        let result = prefixes[index].name! as NSString
     
-        return prefixes[index].name! as NSString
-    }
-    
-    func generateNameWithWordPrefix() -> NSString {
-        let word: NSString = randomWord()
-        let prefix: NSString = randomWordPrefix()
-        return "\(prefix) \(word)" as NSString
+            return result
+       
+        
     }
     func findWordSuffixes() -> [Any] {
         var keywords: [Any]?
@@ -218,7 +267,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             keywords = try managedObjectContext.fetch(fetchRequest)
             
         } catch {
-             showToast(text: "Erro ao obter palavras-chave do tipo \(KeywordType.wordSuffix)")
+            showToast(text: "Erro ao obter palavras-chave do tipo \(KeywordType.wordSuffix)")
         }
         
         if keywords == nil {
@@ -226,7 +275,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         return keywords!
     }
-   
+    
     func randomWordSuffix() -> NSString {
         let suffixes: [Keyword] = findWordSuffixes() as! [Keyword]
         let index: Int = random(withMax: suffixes.count)
@@ -260,7 +309,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             keywords = try managedObjectContext.fetch(fetchRequest)
             
         } catch {
-             showToast(text: "Erro ao obter palavras-chave do tipo \(KeywordType.wordPrefix) e \(KeywordType.wordSuffix)")
+            showToast(text: "Erro ao obter palavras-chave do tipo \(KeywordType.wordPrefix) e \(KeywordType.wordSuffix)")
         }
         
         if keywords == nil {
@@ -268,17 +317,47 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         return keywords!
     }
-
+    
+    
+    func randomWordToMix() -> NSString {
+        let words: [Keyword] = findWordPrefixesAndSuffixes() as! [Keyword]
+        let index: Int = random(withMax: words.count)
+        return words[index].name! as NSString
+    }
+    
+    //NAME GENERATING FUNCTIONS
     func generateNameWithWordSuffix() -> NSString {
         let word: NSString = randomWord()
         let suffix: NSString = randomWordSuffix()
-        return "\(word)\(suffix)" as NSString
+        let suffixresult = "\(word)\(suffix)" as NSString
+   //     if hasMoreThan3Char(name: suffixresult){
+       //     if isUnique(name: suffixresult, list: history) {
+                return suffixresult
+        //    } else {
+         //       return generateNameWithWordSuffix()
+          //  }
+//
+//        } else {
+//            return generateNameWithWordSuffix()
+//        }
+        
     }
     
     func generateNameWithPartialSuffix() -> NSString {
         let word: NSString = randomWord()
         let suffix: NSString = randomPartialSuffix()
-        return "\(word)\(suffix)" as NSString
+        let partialSuffixResult = "\(word)\(suffix)" as NSString
+      //  if hasMoreThan3Char(name: partialSuffixResult){
+          //  if isUnique(name: partialSuffixResult, list: history) {
+                    return partialSuffixResult
+//            } else {
+//            return generateNameWithPartialSuffix()
+//            }
+//        } else {
+//            return generateNameWithPartialSuffix()
+//        }
+        
+        
     }
     
     func generateNameWithMixedWords() -> NSString {
@@ -286,13 +365,35 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let suffix: NSString = randomWordToMix()
         let firstWord: NSString = (word as? NSString)!.substring(to: word.length - 2) as NSString
         let secondWord: NSString? = (suffix as? NSString)!.substring(from: 1) as NSString
-        return "\(firstWord)\(secondWord!)" as NSString
+        let firstSecondWord = "\(firstWord)\(secondWord!)" as NSString
+//        if hasMoreThan3Char(name: firstSecondWord){
+//            if isUnique(name: firstSecondWord, list: history) {
+                return firstSecondWord
+//            } else {
+//                return generateNameWithMixedWords()
+//            }
+//
+//        } else {
+//          return generateNameWithMixedWords()
+//        }
     }
+
     
-    func randomWordToMix() -> NSString {
-        let words: [Keyword] = findWordPrefixesAndSuffixes() as! [Keyword]
-        let index: Int = random(withMax: words.count)
-        return words[index].name! as NSString
+    func generateNameWithWordPrefix() -> NSString {
+        let word: NSString = randomWord()
+        let prefix: NSString = randomWordPrefix()
+        let prefixResult = "\(prefix) \(word)" as NSString
+     //   if hasMoreThan3Char(name: prefixResult){
+       //     if isUnique(name: prefixResult, list: history) {
+                return prefixResult
+//            } else {
+//                return generateNameWithWordPrefix()
+//            }
+//
+//        } else {
+//         return generateNameWithWordPrefix()
+//        }
+//        
     }
     func generateCrazyName() -> NSString {
         if !hasAnyWord() {
@@ -302,9 +403,24 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let suffix: NSString = randomPartialSuffix()
         let vowelCharacterSet = CharacterSet(charactersIn: "aáãeêéiíoõuy")
         let unvowelWord: NSString = (word.components(separatedBy: vowelCharacterSet) as NSArray).componentsJoined(by: "") as NSString
-        return "\(unvowelWord)\(suffix)" as NSString
+        let crazyResult = "\(unvowelWord)\(suffix)" as NSString
+//        if hasMoreThan3Char(name: crazyResult){
+//            if isUnique(name: crazyResult, list: history) {
+                return crazyResult
+//            } else {
+//                return generateCrazyName()
+//            }
+//
+//        } else {
+//            return generateCrazyName()
+//        }
+        
     }
+   
     
+    
+    
+    //USER WARNING
     func showToast(text: String) {
         var style = ToastStyle()
         style.messageColor = UIColor.white

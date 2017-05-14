@@ -21,4 +21,10 @@ public class History: NSManagedObject {
         self.startupName = name
         self.createdAt = createdAt
     }
+    func addToFavorites() {
+        self.isFavorite = true
+    }
+    func removeFromFavorites() {
+        self.isFavorite = false
+    }
 }

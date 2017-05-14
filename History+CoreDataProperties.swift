@@ -18,5 +18,7 @@ extension History {
 
     @NSManaged public var createdAt: NSDate?
     @NSManaged public var startupName: String?
+    @NSManaged @objc(isFavorite) var isFavorite: Bool
+    
 
 }
