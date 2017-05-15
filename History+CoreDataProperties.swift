@@ -16,7 +16,7 @@ extension History {
         return NSFetchRequest<History>(entityName: "History")
     }
 
-    @NSManaged public var createdAt: NSDate?
+    @NSManaged public var createdAt: Date?
     @NSManaged public var startupName: String?
     @NSManaged @objc(isFavorite) var isFavorite: Bool
     

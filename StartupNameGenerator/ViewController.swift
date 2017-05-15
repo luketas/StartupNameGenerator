@@ -25,12 +25,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     var words = [Any]()
-    var lastGenerationRunAt: Date?
     var managedObjectContext: NSManagedObjectContext!
     var history = [History]()
     var keyword = [Keyword]()
-    let currentDate = NSDate()
-    let formatter = DateFormatter()
+    let currentDate = Date()
+    var latestNames = [NSString]()
 
     @IBOutlet weak var nameTable: UITableView!
     @IBOutlet weak var inputText: UITextField!
@@ -67,6 +66,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: CellIdentifier, for: indexPath) as! NameTableViewCell
+        sortList()
         let entry = history[indexPath.row]
         cell.startupNameLbl.text = entry.startupName
         cell.delegate = self
@@ -74,6 +74,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             cell.favoriteBtn.setImage(UIImage(named:"star-full"), for: UIControlState.normal)
         } else {
                 cell.favoriteBtn.setImage(UIImage(named:"emptystar"), for: UIControlState.normal)
+        }
+        if latestNames.contains(history[indexPath.row].startupName as! NSString) {
+            cell.startupNameLbl.font = UIFont.boldSystemFont(ofSize: cell.startupNameLbl.font.pointSize)
+        } else {
+            cell.startupNameLbl.font = UIFont.systemFont(ofSize: cell.startupNameLbl.font.pointSize)
         }
 
         
@@ -84,8 +89,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         if let indexPath = self.nameTable.indexPath(for: cell) {
         if (history[indexPath.row].isFavorite == false) {
             history[indexPath.row].addToFavorites()
-            saveChangesToDatabase()
             showToast(text: "\(String(describing: history[indexPath.row].startupName!)) adicionado aos favoritos!")
+            saveChangesToDatabase()
+            
             cell.favoriteBtn.setImage(UIImage(named:"star-full"), for: UIControlState.normal)
             
         } else {
@@ -100,13 +106,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     
-   
-    
     //Database interaction functions
     func loadData() {
         let fetchRequest: NSFetchRequest<History> = History.fetchRequest()
         do {
             history = try managedObjectContext.fetch(fetchRequest)
+          //  sortList()
+            
             
             self.nameTable.reloadData()
         } catch {
@@ -123,11 +129,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
     }
    
-    
+    func sortList() {
+        history.sort { ($0.isFavorite && !$1.isFavorite)}
+        history.sort {($0.createdAt?.compare($1.createdAt!) == ComparisonResult.orderedAscending)}
+    }
     
     func createHistory(withStartupName: NSString) {
         let historyItem = History(context: managedObjectContext)
-        
         historyItem.createHistoryEntry(name: withStartupName as String, createdAt: currentDate)
         
         do {
@@ -157,7 +165,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 } catch {
                     showToast(text: "Could not save data for item")
                 }
-                
             }
             loadData()
         }
@@ -168,25 +175,65 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         if !hasAnyWord() {
             return
         }
-        lastGenerationRunAt = Date()
-        createHistory(withStartupName: generateNameWithWordPrefix())
-        createHistory(withStartupName: generateNameWithWordPrefix())
-        createHistory(withStartupName: generateNameWithWordSuffix())
-        createHistory(withStartupName: generateNameWithPartialSuffix())
-        createHistory(withStartupName: generateNameWithPartialSuffix())
-        createHistory(withStartupName: generateNameWithPartialSuffix())
-        createHistory(withStartupName: generateNameWithMixedWords())
-        createHistory(withStartupName: generateNameWithMixedWords())
-        createHistory(withStartupName: generateNameWithMixedWords())
-        createHistory(withStartupName: generateCrazyName())
-        
+        latestNames.removeAll()
+    
+        let name1 = generateNameWithWordPrefix()
+        if isUnique(name: name1, list: history) {
+        createHistory(withStartupName: name1)
+        latestNames.append(name1)
+        }
+        let name2 = generateNameWithWordPrefix()
+        if isUnique(name: name2, list: history) {
+        createHistory(withStartupName: name2)
+        latestNames.append(name2)
+        }
+        let name3 = generateNameWithWordSuffix()
+        if isUnique(name: name3, list: history) {
+        createHistory(withStartupName: name3)
+        latestNames.append(name3)
+        }
+        let name4 = generateNameWithPartialSuffix()
+        if isUnique(name: name4, list: history) {
+        createHistory(withStartupName: name4)
+        latestNames.append(name4)
+        }
+        let name5 = generateNameWithPartialSuffix()
+        if isUnique(name: name5, list: history) {
+        createHistory(withStartupName: name5)
+        latestNames.append(name5)
+        }
+        let name6 = generateNameWithPartialSuffix()
+        if isUnique(name: name6, list: history) {
+        createHistory(withStartupName: name6)
+        latestNames.append(name6)
+        }
+        let name7 = generateNameWithMixedWords()
+        if isUnique(name: name7, list: history) {
+        createHistory(withStartupName: name7)
+        latestNames.append(name7)
+        }
+        let name8 = generateNameWithMixedWords()
+        if isUnique(name: name8, list: history) {
+        createHistory(withStartupName: name8)
+        latestNames.append(name8)
+        }
+        let name9 = generateNameWithMixedWords()
+        if isUnique(name: name9, list: history) {
+        createHistory(withStartupName: name9)
+        latestNames.append(name9)
+        }
+        let name10 = generateCrazyName()
+        if isUnique(name: name10, list: history) {
+        createHistory(withStartupName: name10)
+        latestNames.append(name10)
+        }
         loadData()
 
     }
     
     //Word Manipulation funcs
     func hasOnlyOneWord() -> Bool {
-        if ( words.count == 1) {
+        if (words.count == 1) {
             return true
         } else {
             return false
@@ -325,34 +372,23 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let word: NSString = randomWord()
         let suffix: NSString = randomWordSuffix()
         let suffixresult = "\(word)\(suffix)" as NSString
-   //     if hasMoreThan3Char(name: suffixresult){
-       //     if isUnique(name: suffixresult, list: history) {
+
+        if hasMoreThan3Char(name: suffixresult){
                 return suffixresult
-        //    } else {
-         //       return generateNameWithWordSuffix()
-          //  }
-//
-//        } else {
-//            return generateNameWithWordSuffix()
-//        }
-        
+            } else {
+                return generateNameWithWordSuffix()
+            }
     }
     
     func generateNameWithPartialSuffix() -> NSString {
         let word: NSString = randomWord()
         let suffix: NSString = randomPartialSuffix()
         let partialSuffixResult = "\(word)\(suffix)" as NSString
-      //  if hasMoreThan3Char(name: partialSuffixResult){
-          //  if isUnique(name: partialSuffixResult, list: history) {
+        if hasMoreThan3Char(name: partialSuffixResult){
                     return partialSuffixResult
-//            } else {
-//            return generateNameWithPartialSuffix()
-//            }
-//        } else {
-//            return generateNameWithPartialSuffix()
-//        }
-        
-        
+            } else {
+            return generateNameWithPartialSuffix()
+            }
     }
     
     func generateNameWithMixedWords() -> NSString {
@@ -361,16 +397,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let firstWord: NSString = (word as? NSString)!.substring(to: word.length - 2) as NSString
         let secondWord: NSString? = (suffix as? NSString)!.substring(from: 1) as NSString
         let firstSecondWord = "\(firstWord)\(secondWord!)" as NSString
-//        if hasMoreThan3Char(name: firstSecondWord){
-//            if isUnique(name: firstSecondWord, list: history) {
+        if hasMoreThan3Char(name: firstSecondWord){
                 return firstSecondWord
-//            } else {
-//                return generateNameWithMixedWords()
-//            }
-//
-//        } else {
-//          return generateNameWithMixedWords()
-//        }
+        } else {
+          return generateNameWithMixedWords()
+        }
     }
 
     
@@ -378,17 +409,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let word: NSString = randomWord()
         let prefix: NSString = randomWordPrefix()
         let prefixResult = "\(prefix) \(word)" as NSString
-     //   if hasMoreThan3Char(name: prefixResult){
-       //     if isUnique(name: prefixResult, list: history) {
+        if hasMoreThan3Char(name: prefixResult){
+       
                 return prefixResult
-//            } else {
-//                return generateNameWithWordPrefix()
-//            }
-//
-//        } else {
-//         return generateNameWithWordPrefix()
-//        }
-//        
+            } else {
+                return generateNameWithWordPrefix()
+            }
     }
     func generateCrazyName() -> NSString {
         if !hasAnyWord() {
@@ -399,20 +425,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let vowelCharacterSet = CharacterSet(charactersIn: "aáãeêéiíoõuy")
         let unvowelWord: NSString = (word.components(separatedBy: vowelCharacterSet) as NSArray).componentsJoined(by: "") as NSString
         let crazyResult = "\(unvowelWord)\(suffix)" as NSString
-//        if hasMoreThan3Char(name: crazyResult){
-//            if isUnique(name: crazyResult, list: history) {
+        if hasMoreThan3Char(name: crazyResult){
                 return crazyResult
-//            } else {
-//                return generateCrazyName()
-//            }
-//
-//        } else {
-//            return generateCrazyName()
-//        }
-        
-    }
-   
-    
+            } else {
+                return generateCrazyName()
+            }
+        }
     
     
     //USER WARNING
