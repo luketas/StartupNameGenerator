@@ -16,7 +16,7 @@ private let CellIdentifier: String = "NameTableViewCell"
 
 
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, NameCellDelegate {
     
     enum KeywordType : Int {
         case wordPrefix = 1
@@ -66,44 +66,40 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: CellIdentifier) as! NameTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: CellIdentifier, for: indexPath) as! NameTableViewCell
         let entry = history[indexPath.row]
         cell.startupNameLbl.text = entry.startupName
-        
-        
-        let button : UIButton = UIButton(type:UIButtonType.custom) as UIButton
-        
-        button.frame = CGRect(origin: CGPoint(x: 40,y :60), size: CGSize(width: 50, height: 50))
-        let cellHeight: CGFloat = 44.0
-        button.center = CGPoint(x: view.bounds.width - 50, y: cellHeight / 2.0)
-        button.setImage(UIImage(named:"emptystar"), for: UIControlState.normal)
+        cell.delegate = self
         if entry.isFavorite {
-            button.setImage(UIImage(named:"star-full"), for: UIControlState.normal)
+            cell.favoriteBtn.setImage(UIImage(named:"star-full"), for: UIControlState.normal)
         } else {
-            button.setImage(UIImage(named:"emptystar"), for: UIControlState.selected)
+                cell.favoriteBtn.setImage(UIImage(named:"emptystar"), for: UIControlState.normal)
         }
-        
-        button.addTarget(self, action: #selector(buttonClicked), for: UIControlEvents.touchUpInside)
-        button.tag = indexPath.row
-        
-        cell.addSubview(button)
-        
+
         
         return cell
     }
     
-    func buttonClicked(sender : UIButton!) {
-        if (history[sender.tag].isFavorite == false) {
-            history[sender.tag].addToFavorites()
-            addToFavoritesDatabase(historyObject: history[sender.tag])
-            sender.setImage(UIImage(named:"star-full"), for: UIControlState.normal)
+    func favoriteBtnTapped(cell: NameTableViewCell) {
+        if let indexPath = self.nameTable.indexPath(for: cell) {
+        if (history[indexPath.row].isFavorite == false) {
+            history[indexPath.row].addToFavorites()
+            saveChangesToDatabase()
+            showToast(text: "\(String(describing: history[indexPath.row].startupName!)) adicionado aos favoritos!")
+            cell.favoriteBtn.setImage(UIImage(named:"star-full"), for: UIControlState.normal)
+            
         } else {
-            history[sender.tag].removeFromFavorites()
-            print("removed \(history[sender.tag].startupName)")
-            sender.setImage(UIImage(named:"star-empty"), for: UIControlState.normal)
+            history[(indexPath.row)].removeFromFavorites()
+            cell.favoriteBtn.setImage(UIImage(named:"emptystar"), for: UIControlState.normal)
+            print("removed \(history[(indexPath.row)].startupName)")
+            saveChangesToDatabase()
+            
         }
-        nameTable.reloadData()
+        }
+        
     }
+    
+    
    
     
     //Database interaction functions
@@ -118,17 +114,16 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
     }
     
-   
-    
-    func addToFavoritesDatabase(historyObject: History) {
-        
+    func saveChangesToDatabase() {
         do {
             try self.managedObjectContext.save()
             self.loadData()
         } catch {
-            showToast(text: "Could not save data for item \(String(describing: historyObject.startupName)) \(error.localizedDescription)")
+            print(error)
         }
     }
+   
+    
     
     func createHistory(withStartupName: NSString) {
         let historyItem = History(context: managedObjectContext)

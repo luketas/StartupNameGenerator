@@ -142,29 +142,51 @@
                                             </mask>
                                         </variation>
                                     </view>
-                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="Fqn-Mz-czq">
+                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="72" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="Fqn-Mz-czq">
                                         <rect key="frame" x="0.0" y="369" width="414" height="367"/>
                                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <color key="sectionIndexBackgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <prototypes>
-                                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="NameTableViewCell" textLabel="KaY-Gy-ujO" style="IBUITableViewCellStyleDefault" id="hnt-a0-4OK" customClass="NameTableViewCell" customModule="StartupNameGenerator" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="22" width="414" height="44"/>
+                                            <tableViewCell clipsSubviews="YES" contentMode="scaleAspectFit" selectionStyle="default" indentationWidth="10" reuseIdentifier="NameTableViewCell" rowHeight="72" id="t0e-GG-o7T" customClass="NameTableViewCell" customModule="StartupNameGenerator" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="22" width="414" height="72"/>
                                                 <autoresizingMask key="autoresizingMask"/>
-                                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="hnt-a0-4OK" id="P2n-h2-o6z">
-                                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43.666666666666664"/>
+                                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="t0e-GG-o7T" id="zG2-oo-PT1">
+                                                    <rect key="frame" x="0.0" y="0.0" width="414" height="71.666666666666671"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
-                                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="KaY-Gy-ujO">
-                                                            <rect key="frame" x="15" y="0.0" width="384" height="43.666666666666664"/>
-                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                                            <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
+                                                        <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iw4-po-626">
+                                                            <rect key="frame" x="8" y="0.0" width="398" height="72"/>
+                                                            <subviews>
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iVB-dm-Ubw">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="300" height="72"/>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="width" constant="300" id="Jnq-mf-zAN"/>
+                                                                    </constraints>
+                                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                                    <nil key="textColor"/>
+                                                                    <nil key="highlightedColor"/>
+                                                                </label>
+                                                                <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xRe-Hq-SmN">
+                                                                    <rect key="frame" x="300" y="0.0" width="98" height="72"/>
+                                                                    <state key="normal" title="Button" image="emptystar"/>
+                                                                    <connections>
+                                                                        <action selector="favoriteBtnPressed:" destination="t0e-GG-o7T" eventType="touchUpInside" id="CnA-Kw-fAD"/>
+                                                                    </connections>
+                                                                </button>
+                                                            </subviews>
+                                                        </stackView>
                                                     </subviews>
+                                                    <constraints>
+                                                        <constraint firstItem="iw4-po-626" firstAttribute="top" secondItem="zG2-oo-PT1" secondAttribute="top" id="7R6-Iq-3KB"/>
+                                                        <constraint firstItem="iw4-po-626" firstAttribute="leading" secondItem="zG2-oo-PT1" secondAttribute="leading" constant="8" id="W5o-Rn-Vh8"/>
+                                                        <constraint firstAttribute="trailing" secondItem="iw4-po-626" secondAttribute="trailing" constant="8" id="Xu0-Fe-aL9"/>
+                                                        <constraint firstAttribute="bottom" secondItem="iw4-po-626" secondAttribute="bottom" id="jqq-8S-a0F"/>
+                                                        <constraint firstItem="iw4-po-626" firstAttribute="centerY" secondItem="zG2-oo-PT1" secondAttribute="centerY" id="tqa-bg-kn9"/>
+                                                    </constraints>
                                                 </tableViewCellContentView>
                                                 <connections>
-                                                    <outlet property="startupNameLbl" destination="KaY-Gy-ujO" id="RM8-VT-sYA"/>
+                                                    <outlet property="favoriteBtn" destination="xRe-Hq-SmN" id="eXP-fA-xap"/>
+                                                    <outlet property="startupNameLbl" destination="iVB-dm-Ubw" id="kZa-7D-Ggq"/>
                                                 </connections>
                                             </tableViewCell>
                                         </prototypes>
@@ -200,4 +222,7 @@
             <point key="canvasLocation" x="13.043478260869566" y="107.60869565217392"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="emptystar" width="72" height="72"/>
+    </resources>
 </document>

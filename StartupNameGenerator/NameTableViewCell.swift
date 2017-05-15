@@ -8,13 +8,23 @@
 
 import UIKit
 
-
+protocol NameCellDelegate {
+    func favoriteBtnTapped(cell: NameTableViewCell)
+}
 
 class NameTableViewCell: UITableViewCell {
    
-   
+   var delegate: NameCellDelegate?
     
     @IBOutlet weak var startupNameLbl: UILabel!
+    @IBOutlet weak var favoriteBtn: UIButton!
+    
+    @IBAction func favoriteBtnPressed(_ sender: Any) {
+        if let _ = delegate {
+            delegate?.favoriteBtnTapped(cell: self)
+        }
+      
+    }
 
     override func awakeFromNib() {
         super.awakeFromNib()
