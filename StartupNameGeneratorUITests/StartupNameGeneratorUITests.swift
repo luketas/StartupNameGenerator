@@ -32,5 +32,39 @@ class StartupNameGeneratorUITests: XCTestCase {
         // Use recording to get started writing UI tests.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
+    func testGenerateBtn() {
+        
+        let app = XCUIApplication()
+        app.textFields.containing(.button, identifier:"Clear text").element.typeText("na")
+        app.typeText("me")
+        app.tables.cells.containing(.staticText, identifier:"Easy name").buttons["Button"].tap()
+        app.buttons["Gerar"].tap()
+        
+    }
+    func testCleanBtn() {
+        
+        let app = XCUIApplication()
+        let limparButton = app.buttons["Limpar"]
+        limparButton.tap()
+        app.buttons["Gerar"].tap()
+        app.tables.cells.containing(.staticText, identifier:"Clube name").buttons["Button"].tap()
+        limparButton.tap()
+        
+    }
+    func testFavoriteBtn() {
+        
+        let app = XCUIApplication()
+        let tablesQuery = app.tables
+        tablesQuery.buttons["Button"].tap()
+        
+        let limparButton = app.buttons["Limpar"]
+        limparButton.tap()
+        app.buttons["Gerar"].tap()
+        tablesQuery.cells.containing(.staticText, identifier:"Clube name").buttons["Button"].tap()
+        tablesQuery.cells.containing(.staticText, identifier:"99 name").buttons["Button"].tap()
+        tablesQuery.cells.containing(.staticText, identifier:"nameClube").buttons["Button"].tap()
+        limparButton.tap()
+        
+    }
     
 }

@@ -13,7 +13,6 @@ import UIKit
 
 class LocalDataManager {
     static let instance = LocalDataManager()
-    
     private var _latestNames = [NSString]()
     private var _history = [History]()
     var words = [Any]()
@@ -60,8 +59,6 @@ class LocalDataManager {
     }
     
     func sortList() {
-        //        history.sort { ($0.isFavorite && !$1.isFavorite)}
-        //        history.sort {($0.createdAt?.compare($1.createdAt!) == ComparisonResult.orderedAscending)}
         _history = history.sorted { t1, t2 in
             if t1.isFavorite == t2.isFavorite {
                 return t1.createdAt!.timeIntervalSince1970 < t2.createdAt!.timeIntervalSince1970
