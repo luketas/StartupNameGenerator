@@ -22,15 +22,38 @@ class StartupNameGeneratorUITests: XCTestCase {
 
         // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
     }
-    
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
+    func testGenerateBtn() {
+        let app = XCUIApplication()
+        app.textFields.containing(.button, identifier:"Clear text").element.typeText("na")
+        app.typeText("me")
+        app.tables.cells.containing(.staticText, identifier:"Easy name").buttons["Button"].tap()
+        app.buttons["Gerar"].tap()
+        
     }
-    
-    func testExample() {
-        // Use recording to get started writing UI tests.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    func testCleanBtn() {
+        
+        let app = XCUIApplication()
+        let limparButton = app.buttons["Limpar"]
+        limparButton.tap()
+        app.buttons["Gerar"].tap()
+        app.tables.cells.containing(.staticText, identifier:"Clube name").buttons["Button"].tap()
+        limparButton.tap()
+        
+    }
+    func testFavoriteBtn() {
+        
+        let app = XCUIApplication()
+        let tablesQuery = app.tables
+        tablesQuery.buttons["Button"].tap()
+        
+        let limparButton = app.buttons["Limpar"]
+        limparButton.tap()
+        app.buttons["Gerar"].tap()
+        tablesQuery.cells.containing(.staticText, identifier:"Clube name").buttons["Button"].tap()
+        tablesQuery.cells.containing(.staticText, identifier:"99 name").buttons["Button"].tap()
+        tablesQuery.cells.containing(.staticText, identifier:"nameClube").buttons["Button"].tap()
+        limparButton.tap()
+        
     }
     
 }

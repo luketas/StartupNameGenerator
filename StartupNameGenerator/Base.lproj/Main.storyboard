@@ -151,7 +151,7 @@
                                                 <rect key="frame" x="0.0" y="22" width="414" height="72"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="t0e-GG-o7T" id="zG2-oo-PT1">
-                                                    <rect key="frame" x="0.0" y="0.0" width="414" height="71.666666666666671"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="414" height="72"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
                                                         <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iw4-po-626">
@@ -184,6 +184,9 @@
                                                         <constraint firstItem="iw4-po-626" firstAttribute="centerY" secondItem="zG2-oo-PT1" secondAttribute="centerY" id="tqa-bg-kn9"/>
                                                     </constraints>
                                                 </tableViewCellContentView>
+                                                <accessibility key="accessibilityConfiguration">
+                                                    <bool key="isElement" value="YES"/>
+                                                </accessibility>
                                                 <connections>
                                                     <outlet property="favoriteBtn" destination="xRe-Hq-SmN" id="eXP-fA-xap"/>
                                                     <outlet property="startupNameLbl" destination="iVB-dm-Ubw" id="kZa-7D-Ggq"/>
