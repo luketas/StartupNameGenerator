@@ -25,6 +25,15 @@ class NameTableViewCell: UITableViewCell {
         }
       
     }
+    
+    func set(entry: History) {
+        self.startupNameLbl.text = entry.startupName
+        if entry.isFavorite {
+            self.favoriteBtn.setImage(UIImage(named:"star-full"), for: UIControlState.normal)
+        } else {
+            self.favoriteBtn.setImage(UIImage(named:"emptystar"), for: UIControlState.normal)
+        }
+    }
 
     override func awakeFromNib() {
         super.awakeFromNib()

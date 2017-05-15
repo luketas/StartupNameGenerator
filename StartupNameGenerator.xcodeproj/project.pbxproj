@@ -34,6 +34,7 @@
 		A0A709761EC3D3CF0064E867 /* Keyword+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0A709721EC3D3CF0064E867 /* Keyword+CoreDataProperties.swift */; };
 		A0A709771EC3D3CF0064E867 /* Keyword+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0A709721EC3D3CF0064E867 /* Keyword+CoreDataProperties.swift */; };
 		A0A709781EC3D3CF0064E867 /* Keyword+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0A709721EC3D3CF0064E867 /* Keyword+CoreDataProperties.swift */; };
+		A0D3E1A81EC966BC00E048BA /* LocalDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D3E1A71EC966BC00E048BA /* LocalDataManager.swift */; };
 		CE892FA93773BEDD4552AD0D /* Pods_StartupNameGeneratorTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F52D806643C17935F081712 /* Pods_StartupNameGeneratorTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -83,6 +84,7 @@
 		A0A7096A1EC3D34D0064E867 /* History+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "History+CoreDataProperties.swift"; path = "../History+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		A0A709711EC3D3CF0064E867 /* Keyword+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Keyword+CoreDataClass.swift"; path = "../Keyword+CoreDataClass.swift"; sourceTree = "<group>"; };
 		A0A709721EC3D3CF0064E867 /* Keyword+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Keyword+CoreDataProperties.swift"; path = "../Keyword+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		A0D3E1A71EC966BC00E048BA /* LocalDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalDataManager.swift; sourceTree = "<group>"; };
 		B85556E6D4163AA607CF6641 /* Pods-StartupNameGeneratorUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StartupNameGeneratorUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-StartupNameGeneratorUITests/Pods-StartupNameGeneratorUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		C8AF860FFE87FA6623F35B2A /* Pods-StartupNameGenerator.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StartupNameGenerator.release.xcconfig"; path = "Pods/Target Support Files/Pods-StartupNameGenerator/Pods-StartupNameGenerator.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -151,6 +153,7 @@
 		A0A709321EC3C6AF0064E867 /* StartupNameGenerator */ = {
 			isa = PBXGroup;
 			children = (
+				A0D3E1A61EC9645C00E048BA /* DataManager */,
 				A011C1AA1EC4E60300738EF0 /* keyword-list.csv */,
 				A0A709331EC3C6AF0064E867 /* AppDelegate.swift */,
 				A0A709351EC3C6AF0064E867 /* ViewController.swift */,
@@ -193,6 +196,14 @@
 			);
 			name = Model;
 			path = StartupNameGenerator;
+			sourceTree = "<group>";
+		};
+		A0D3E1A61EC9645C00E048BA /* DataManager */ = {
+			isa = PBXGroup;
+			children = (
+				A0D3E1A71EC966BC00E048BA /* LocalDataManager.swift */,
+			);
+			name = DataManager;
 			sourceTree = "<group>";
 		};
 		BBEA636A07076B8B0A57292D /* Pods */ = {
@@ -498,6 +509,7 @@
 				A0A7096B1EC3D34D0064E867 /* History+CoreDataClass.swift in Sources */,
 				A0A709361EC3C6AF0064E867 /* ViewController.swift in Sources */,
 				A0A709341EC3C6AF0064E867 /* AppDelegate.swift in Sources */,
+				A0D3E1A81EC966BC00E048BA /* LocalDataManager.swift in Sources */,
 				A0A709761EC3D3CF0064E867 /* Keyword+CoreDataProperties.swift in Sources */,
 				A011C1A91EC4BE9600738EF0 /* RoundedButton.swift in Sources */,
 				A0A7093C1EC3C6AF0064E867 /* StartupNameGenerator.xcdatamodeld in Sources */,
